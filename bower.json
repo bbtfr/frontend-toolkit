@@ -1,0 +1,25 @@
+{
+  "name": "frontend-toolkit",
+  "version": "0.0.1",
+  "authors": [
+    "Theo <bbtfrr@gmail.com>"
+  ],
+  "description": "My Frontend Toolkit.",
+  "license": "MIT",
+  "homepage": "https://github.com/bbtfr/frontend-toolkit",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "assets/components/",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "underscore": "latest",
+    "backbone": "latest",
+    "ratchet": "latest",
+    "bootstrap-sass": "latest",
+    "jquery": "latest"
+  }
+}
