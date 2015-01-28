@@ -1,7 +1,7 @@
 require 'thor'
 require 'fileutils'
 
-class UpdateCLI < Thor 
+class UpdateCLI < Thor
   desc "all", "update all the components"
   def all
     bower
@@ -11,27 +11,31 @@ class UpdateCLI < Thor
     ratchet
     jquery
     zepto
+    react
   end
 
   desc "bower", "update bower components"
   def bower
     FileUtils.cd GEM_PATH do
-      run :bower, :update
+      update :all
     end
   end
 
   desc "backbone", "update backbone from bower components"
   def backbone
+    update "backbone"
     copy "backbone/backbone.js", "javascripts"
   end
 
   desc "underscore", "update underscore from bower components"
   def underscore
+    update "underscore"
     copy "underscore/underscore.js", "javascripts"
   end
 
   desc "bootstrap", "update bootstrap from bower components"
   def bootstrap
+    update "bootstrap-sass"
     copy "bootstrap-sass/assets/javascripts/bootstrap/*", "javascripts/bootstrap"
     copy "bootstrap-sass/assets/stylesheets/*", "stylesheets"
     copy "bootstrap-sass/assets/fonts/*", "fonts"
@@ -39,6 +43,7 @@ class UpdateCLI < Thor
 
   desc "ratchet", "update ratchet from bower components"
   def ratchet
+    update "ratchet"
     copy "ratchet/js/*.js", "javascripts/ratchet"
     copy "ratchet/sass/*.scss", "stylesheets/ratchet"
     copy "ratchet/fonts/*", "fonts/ratchet"
@@ -47,6 +52,7 @@ class UpdateCLI < Thor
 
   desc "jquery", "update jquery from bower components"
   def jquery
+    update "jquery"
     copy "jquery/src/*", "javascripts/jquery"
     copy "jquery/dist/jquery.js", "javascripts"
   end
@@ -55,6 +61,13 @@ class UpdateCLI < Thor
   def zepto
     download "madrobby/zepto"
     copy "zepto-master/src/*", "javascripts/zepto"
+  end
+
+  desc "react", "update react from bower components"
+  def react
+    update "react"
+    copy "react/react.js", "javascripts"
+    copy "react/react-with-addons.js", "javascripts"
   end
 
   private
@@ -109,6 +122,15 @@ class UpdateCLI < Thor
         FileUtils.rm_rf "#{dist}-master"
         system "unzip -oq master.zip"
         FileUtils.rm_f "master.zip"
+      end
+    end
+
+    def update package
+      if package == :all
+        run :bower, :update
+        @already_update = true
+      elsif !@already_update
+        run :bower, :update, package
       end
     end
 end
