@@ -66,8 +66,10 @@ class UpdateCLI < Thor
   desc "react", "update react from bower components"
   def react
     update "react"
+    update "react-router"
     copy "react/react.js", "javascripts"
-    copy "react/react-with-addons.js", "javascripts"
+    copy "react/react-with-addons.js", "javascripts/react"
+    copy "react-router/dist/react-router.js", "javascripts/react"
   end
 
   private

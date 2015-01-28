@@ -21,6 +21,7 @@
     "ratchet": "latest",
     "bootstrap-sass": "latest",
     "jquery": "latest",
-    "react": "latest"
+    "react": "latest",
+    "react-router": "latest"
   }
 }
