@@ -17,7 +17,7 @@ And then execute:
 A collection of Javascript & CSS libraries, so you can use it in your asset pipeline.
 
 For example, in your application.js
-```javascript 
+```javascript
 //= require backbone
 ```
 

@@ -73,6 +73,7 @@ class Collection2ViewBinder
     infinite:
       prefix: false
       suffix: false
+      slice: 10
 
       onReset: (collection, options) ->
         @remove(cid: cid) for cid, template of @views
@@ -82,7 +83,7 @@ class Collection2ViewBinder
             _where(collection, @infinite.attributes)
           else
             collection.models
-        @show(@infinite.slice)
+        @show(@options.slice)
 
       onFilter: (collection, attributes) ->
         @infinite.attributes = attributes
@@ -92,15 +93,19 @@ class Collection2ViewBinder
         @reset()
 
       onScroll: ->
+        getHeight = =>
+          height = @$container.attr("scrollHeight")
+          height -= @$container.attr("scrollTop")
+          height -= @$container.height()
+          height -= @$suffix.height() if @$suffix?
+          height
+
         @infinite.height ||= @$selector.height() / @infinite.length
-        height = @$container.attr("scrollHeight")
-        height -= @$container.attr("scrollTop")
-        height -= @$container.height()
-        height -= @$suffix.height() if @$suffix?
-        if height < @infinite.height * @infinite.slice
-          @show(@infinite.length + @infinite.slice)
+        while getHeight() < @infinite.height * @options.slice
+          @show(@infinite.length + @options.slice)
 
       onShow: (length) ->
+        return if length < @infinite.length
         models = @infinite.models[@infinite.length...length]
         @infinite.length = length
         @add(model) for model in models
@@ -119,6 +124,7 @@ class Collection2ViewBinder
     @infinite = options.infinite
     if @infinite?
       @options = _.extend(@options, @defaults.infinite, @infinite)
+      console.log @options
 
   on: ->
     @off() if @handlers?
@@ -157,7 +163,7 @@ class Collection2ViewBinder
 
   filter: (attributes) ->
     if _.isEmpty(attributes) and not _.isFunction(attributes)
-      attributes = undefined 
+      attributes = undefined
     @handlers["filter"](@collection, attributes)
 
   sort: (comparator) ->
