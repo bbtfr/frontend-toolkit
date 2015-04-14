@@ -124,7 +124,6 @@ class Collection2ViewBinder
     @infinite = options.infinite
     if @infinite?
       @options = _.extend(@options, @defaults.infinite, @infinite)
-      console.log @options
 
   on: ->
     @off() if @handlers?
