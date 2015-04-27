@@ -93,6 +93,9 @@ class Collection2ViewBinder
         @reset()
 
       onScroll: ->
+        return if @onScrollWorking
+        @onScrollWorking = true
+
         getHeight = =>
           height = @$container.attr("scrollHeight")
           height -= @$container.attr("scrollTop")
@@ -103,6 +106,8 @@ class Collection2ViewBinder
         @infinite.height ||= @$selector.height() / @infinite.length
         while getHeight() < @infinite.height * @options.slice
           @show(@infinite.length + @options.slice)
+
+        @onScrollWorking = false
 
       onShow: (length) ->
         return if length < @infinite.length
@@ -116,12 +121,12 @@ class Collection2ViewBinder
 
   constructor: (collection, $el, options) ->
     [ @collection, @$el ] = arguments
+    @infinite = options.infinite
     @options = _.defaults(options, @defaults)
     @template = _.required(@options, "template")
     @$selector = @$el.find(_.required(@options, 'selector'))
     @views = {}
 
-    @infinite = options.infinite
     if @infinite?
       @options = _.extend(@options, @defaults.infinite, @infinite)
 
