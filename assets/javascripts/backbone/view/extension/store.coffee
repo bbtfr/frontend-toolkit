@@ -76,7 +76,8 @@ class Collection2ViewBinder
       slice: 10
 
       onReset: (collection, options) ->
-        @remove(cid: cid) for cid, template of @views
+        for cid, template of @views
+          (template.$el || template).hide()
         @$container.scrollTop(0)
         @infinite.length = 0
         @infinite.models = if @infinite.attributes?
@@ -104,16 +105,21 @@ class Collection2ViewBinder
           height
 
         @infinite.height ||= @$selector.height() / @infinite.length
-        while getHeight() < @infinite.height * @options.slice
+        while getHeight() < @infinite.height * @options.slice and @infinite.length < @infinite.models.length
           @show(@infinite.length + @options.slice)
 
         @onScrollWorking = false
 
       onShow: (length) ->
-        return if length < @infinite.length
         models = @infinite.models[@infinite.length...length]
         @infinite.length = length
-        @add(model) for model in models
+        for model in models
+          template = @views[model.cid]
+          if template?
+            template.$el.appendTo(@$selector)
+            (template.$el || template).show()
+          else
+            @add(model)
         if @$suffix?
           height = (@infinite.models.length - @infinite.length) * @infinite.height
           height = if height > 0 then height else 0
