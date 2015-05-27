@@ -69,7 +69,7 @@ class UpdateCLI < Thor
     update "react-router"
     copy "react/react.js", "javascripts"
     copy "react/react-with-addons.js", "javascripts/react"
-    copy "react-router/dist/react-router.js", "javascripts/react"
+    copy "react-router/build/umd/ReactRouter.js", "javascripts/react/react-router.js"
   end
 
   private
@@ -89,14 +89,19 @@ class UpdateCLI < Thor
 
     def copy src, dist
       say_status "copy", "components/#{src} to #{dist}"
-      glob = Dir[File.join COMPONENTS_PATH, src]
+      src = File.join COMPONENTS_PATH, src
       dist = File.join ASSETS_PATH, dist
-      unless glob.any?
-        say_status "error", "No files matching `#{src}'", :red
-        exit -1
+      if File.file?(src) && File.extname(src) == File.extname(dist)
+        FileUtils.cp src, dist
+      else
+        glob = Dir[src]
+        if glob.empty?
+          say_status "error", "No files matching `#{src}'", :red
+          exit -1
+        end
+        FileUtils.mkdir_p dist
+        FileUtils.cp_r glob, dist
       end
-      FileUtils.mkdir_p dist
-      FileUtils.cp_r glob, dist
     end
 
     def replace file, src, dist

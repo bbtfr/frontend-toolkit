@@ -15,12 +15,6 @@
 #       "callback on remove model from collection (optional)"
 #
 
-_where = (collection, attributes) ->
-  if _.isFunction(attributes)
-    attributes(collection)
-  else
-    collection.where(attributes)
-
 class Collection2ViewBinder
   defaults:
     onAdd: (model, collection, options) ->
@@ -64,7 +58,7 @@ class Collection2ViewBinder
       if attributes?
         eachTemplate collection.models, (template) ->
           template.hide()
-        eachTemplate _where(collection, attributes), (template) ->
+        eachTemplate collection.where(attributes), (template) ->
           template.show()
       else
         eachTemplate collection.models, (template) ->
@@ -81,7 +75,7 @@ class Collection2ViewBinder
         @$container.scrollTop(0)
         @infinite.length = 0
         @infinite.models = if @infinite.attributes?
-            _where(collection, @infinite.attributes)
+            collection.where(@infinite.attributes)
           else
             collection.models
         @show(@options.slice)
